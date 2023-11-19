@@ -6,7 +6,8 @@ import Column from '~/pages/Boards/BoardContent/ListColumns/Column/Column.jsx'
 import Button from '@mui/material/Button'
 import { NoteAdd } from '@mui/icons-material'
 
-function ListColumns() {
+function ListColumns(props) {
+  const columns = props.columns
 
   return (
     <Box sx={{
@@ -19,13 +20,9 @@ function ListColumns() {
       overflowY: 'hidden',
       '&::-webkit-scrollbar-track': { m:2 }
     }}>
-      <Column/>
-      <Column/>
-      <Column/>
-      <Column/>
-      <Column/>
+      {columns?.map(column => (<Column column={column} key={column._id}/>))}
 
-      <Box sx={{
+       <Box sx={{
         minWidth: '200px',
         maxWidth: '200px',
         mx: 2,

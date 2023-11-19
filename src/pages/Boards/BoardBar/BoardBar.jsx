@@ -2,6 +2,7 @@ import React from 'react'
 import { Avatar, AvatarGroup, Box, Chip, Tooltip } from '@mui/material'
 import { AddToDrive, Bolt, Dashboard, FilterList, PersonAdd, VpnLock } from '@mui/icons-material'
 import Button from '@mui/material/Button'
+import { capitalizeFirstLetter } from '~/utils/data.util.js'
 
 const MENU_STYLES = {
   color: 'white',
@@ -19,7 +20,9 @@ const MENU_STYLES = {
 
 const BOX_STYLES = {display: 'flex', alignItems: 'center', gap: 2}
 
-function BoardBar() {
+function BoardBar(props) {
+  const board = props.board
+
   return (
     <Box sx={{
       width: '100%',
@@ -35,10 +38,10 @@ function BoardBar() {
       <Box sx={BOX_STYLES}>
         <Chip
           sx={MENU_STYLES}
-          icon={<Dashboard />} label="HoangTiger Trello" onClick={ () => {}}/>
+          icon={<Dashboard />} label={board?.title} onClick={ () => {}}/>
         <Chip
           sx={MENU_STYLES}
-          icon={<VpnLock />} label="Public/Private Workspace" onClick={ () => {}}/>
+          icon={<VpnLock />} label={capitalizeFirstLetter(board?.type)} onClick={ () => {}}/>
         <Chip
           sx={MENU_STYLES}
           icon={<AddToDrive />} label="Google Driver" onClick={ () => {}}/>

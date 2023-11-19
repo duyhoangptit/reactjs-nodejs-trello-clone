@@ -94,3 +94,6 @@ x.y.z
     Note: The gap property was formerly known as grid-gap.
     &: Ap dung cho component do
     *: Ap dung cho root
+
+# Destructuring assignment
+    https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment

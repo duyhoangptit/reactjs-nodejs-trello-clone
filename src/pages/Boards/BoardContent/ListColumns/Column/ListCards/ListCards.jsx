@@ -1,9 +1,12 @@
 import React from 'react'
 import { Box } from '@mui/material'
 import TrelloCard from '~/pages/Boards/BoardContent/ListColumns/Column/ListCards/TrelloCard/TrelloCard.jsx'
+import Column from '~/pages/Boards/BoardContent/ListColumns/Column/Column.jsx'
 
 
-function ListCards() {
+function ListCards(props) {
+
+  const cards = props.cards
 
   return (
     <Box sx={{
@@ -23,20 +26,7 @@ function ListCards() {
         backgroundColor: '#bfc2cf'
       }
     }}>
-      <TrelloCard/>
-      <TrelloCard temporaryHideMedia/>
-      <TrelloCard temporaryHideMedia/>
-      <TrelloCard temporaryHideMedia/>
-      <TrelloCard temporaryHideMedia/>
-      <TrelloCard temporaryHideMedia/>
-      <TrelloCard temporaryHideMedia/>
-      <TrelloCard temporaryHideMedia/>
-      <TrelloCard temporaryHideMedia/>
-      <TrelloCard temporaryHideMedia/>
-      <TrelloCard temporaryHideMedia/>
-      <TrelloCard temporaryHideMedia/>
-      <TrelloCard temporaryHideMedia/>
-      <TrelloCard temporaryHideMedia/>
+      {cards?.map(card => (<TrelloCard card={card} key={card._id}/>))}
     </Box>
   )
 }

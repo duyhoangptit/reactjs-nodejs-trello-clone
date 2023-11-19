@@ -24,9 +24,12 @@ import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import Button from '@mui/material/Button'
 import ListCards from '~/pages/Boards/BoardContent/ListColumns/Column/ListCards/ListCards.jsx'
+import { mapOrder } from '~/utils/data.util.js'
 
-function Column() {
+function Column(props) {
 
+  const column = props.column
+  const orderedCards = mapOrder(column?.cards, column?.cardOrderIds, '_id')
   const [anchorEl, setAnchorEl] = React.useState(null)
   const open = Boolean(anchorEl)
   const handleClick = (event) => {
@@ -59,7 +62,7 @@ function Column() {
           fontWeight: 'bold',
           cursor: 'pointer'
         }}>
-          Column Title
+          {column?.title}
         </Typography>
         <Box>
           <Tooltip title={'More options'}>
@@ -122,7 +125,7 @@ function Column() {
         </Box>
       </Box>
 
-      <ListCards/>
+      <ListCards cards={orderedCards}/>
 
       {/*Box footer*/}
       <Box sx={{
