@@ -22,7 +22,7 @@ function Workspaces() {
       <Button
         sx={{color: 'white'}}
         id="basic-button-workspaces"
-        aria-controls={open ? 'basic-button-workspaces' : undefined}
+        aria-controls={open ? 'basic-menu-workspaces' : undefined}
         aria-haspopup="true"
         aria-expanded={open ? 'true' : undefined}
         onClick={handleClick}

@@ -8,13 +8,13 @@ function Board() {
   return (
     <Container disableGutters
                maxWidth={false}
-               sx={{height: '100vh'}}>
+               sx={{ height: '100vh' }}>
       {/*app bar*/}
-      <AppBar />
+      <AppBar/>
       {/*board bar*/}
-      <BoardBar />
+      <BoardBar/>
       {/*content bar*/}
-      <BoardContent />
+      <BoardContent/>
     </Container>
   )
 }

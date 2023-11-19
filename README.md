@@ -87,3 +87,10 @@ x.y.z
     md, medium: 900px
     lg, large: 1200px
     xl, extra-large: 1536px
+# Html, css
+    g: The gap property defines the size of the gap between the rows and between the columns in flexbox, grid or multi-column layout. It is a shorthand for the following properties:
+    row-gap
+    column-gap
+    Note: The gap property was formerly known as grid-gap.
+    &: Ap dung cho component do
+    *: Ap dung cho root

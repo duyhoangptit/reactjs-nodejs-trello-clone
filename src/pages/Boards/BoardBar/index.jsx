@@ -73,7 +73,12 @@ function BoardBar() {
               width: 30,
               height: 30,
               fontSize: '16px',
-              border: 'none'
+              border: 'none',
+              color: 'white',
+              cusor: 'pointer',
+              '&.first-of-type': {
+                bgcolor: '#a4b0be'
+              }
           }
         }}>
           <Tooltip title={'HoangTiger'}>
