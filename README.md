@@ -96,4 +96,31 @@ x.y.z
     *: Ap dung cho root
 
 # Destructuring assignment
-    https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment
+[Destructuring assignment](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment)
+
+# Using dndkit for drag and drop
+[dndkit](https://dndkit.com/)
+`` npm install @dnd-kit/core@6.0.8``
+`` npm install @dnd-kit/sortable@^7.0.2``
+`` npm install @dnd-kit/utilities@^3.2.1``
+
+## Strategy
+The SortableContext component also accepts different sorting strategies to compute transforms for the useSortable hook. The built in strategies include:
+  - rectSortingStrategy:  This is the default value, and is suitable for most use cases. This strategy does not support virtualized lists.
+  - verticalListSortingStrategy: This strategy is optimized for vertical lists, and supports virtualized lists.
+  - horizontalListSortingStrategy: This strategy is optimized for horizontal lists, and supports virtualized lists.
+  - rectSwappingStrategy: Use this strategy to achieve swappable functionality.
+
+# arrayMove
+```
+    export function arrayMove<T>(array: T[], from: number, to: number): T[] {
+      const newArray = array.slice();
+      newArray.splice(
+        to < 0 ? newArray.length + to : to,
+        0,
+        newArray.splice(from, 1)[0]
+      );
+    
+      return newArray;
+    }
+```

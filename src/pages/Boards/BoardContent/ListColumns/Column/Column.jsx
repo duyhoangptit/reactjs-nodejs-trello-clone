@@ -1,9 +1,6 @@
 import React from 'react'
 import {
   Box,
-  Card, CardActions,
-  CardContent,
-  CardMedia,
   Divider,
   ListItemIcon,
   ListItemText,
@@ -11,20 +8,21 @@ import {
   Typography
 } from '@mui/material'
 import {
-  AddCard, Attachment,
-  Cloud, Comment,
+  AddCard,
+  Cloud,
   ContentCopy,
   ContentCut,
   ContentPaste,
   DeleteForever, DragHandle,
   ExpandMore,
-  Group
 } from '@mui/icons-material'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import Button from '@mui/material/Button'
 import ListCards from '~/pages/Boards/BoardContent/ListColumns/Column/ListCards/ListCards.jsx'
 import { mapOrder } from '~/utils/data.util.js'
+import { useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 
 function Column(props) {
 
@@ -40,8 +38,34 @@ function Column(props) {
     setAnchorEl(null)
   }
 
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition
+  } = useSortable(
+    {
+      id: column._id,
+      data: { ...column }
+    }
+  )
+
+  const dndKitColumnStyles = {
+    // touchAction: 'none', // danh cho sensor default dang PointerSensor
+    // thay vì transform thì chuyển sang Translate để k bị lỗi stretch
+    // https://github.com/clauderic/dnd-kit/issues/117
+    transform: CSS.Translate.toString(transform),
+    transition
+  }
+
   return (
-    <Box sx={{
+    <Box
+      ref={setNodeRef}
+      style={dndKitColumnStyles}
+      { ...attributes }
+      { ...listeners }
+      sx={{
       minWidth: '300px',
       maxWidth: '300px',
       bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#333643' : '#ebecf0'),
