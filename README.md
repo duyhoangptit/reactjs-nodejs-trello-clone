@@ -104,6 +104,8 @@ x.y.z
 `` npm install @dnd-kit/sortable@^7.0.2``
 `` npm install @dnd-kit/utilities@^3.2.1``
 
+# column detect algorithms
+
 ## Strategy
 The SortableContext component also accepts different sorting strategies to compute transforms for the useSortable hook. The built in strategies include:
   - rectSortingStrategy:  This is the default value, and is suitable for most use cases. This strategy does not support virtualized lists.
@@ -124,3 +126,4 @@ The SortableContext component also accepts different sorting strategies to compu
       return newArray;
     }
 ```
+![img_2.png](img_2.png)
