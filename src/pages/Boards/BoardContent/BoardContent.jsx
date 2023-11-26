@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import {
   Box,
 } from '@mui/material'
@@ -8,8 +8,8 @@ import {
   closestCorners,
   defaultDropAnimationSideEffects,
   DndContext,
-  DragOverlay,
-  MouseSensor,
+  DragOverlay, getFirstCollision,
+  MouseSensor, pointerWithin,
   TouchSensor,
   useSensor,
   useSensors
@@ -18,6 +18,7 @@ import { arrayMove } from '@dnd-kit/sortable'
 import Column from '~/pages/Boards/BoardContent/ListColumns/Column/Column.jsx'
 import TrelloCard from '~/pages/Boards/BoardContent/ListColumns/Column/ListCards/TrelloCard/TrelloCard.jsx'
 import {cloneDeep} from 'lodash'
+import column from '~/pages/Boards/BoardContent/ListColumns/Column/Column.jsx'
 
 const ACTIVE_DRAG_ITEM_TYPE = {
   COLUMN: 'ACTIVE_DRAG_ITEM_TYPE_COLUMN',
@@ -53,6 +54,7 @@ function BoardContent(props) {
   const [activeDragItemId, setActiveDragItemId] = useState([])
   const [activeDragItemType, setActiveDragItemType] = useState([])
   const [activeDragItemData, setActiveDragItemData] = useState([])
+  const lastOverId = useRef( null)
 
   // cache tmp data old
   const [oldColumnWhenDraggingCard, setOldColumnWhenDraggingCard] = useState([])
@@ -285,13 +287,51 @@ function BoardContent(props) {
     })
   }
 
+  const collisionDetectionStrategy = useCallback((args) => {
+    console.log('collisionDetectionStrategy')
+    // neu la column thi su dung thuat toan cu
+    if (activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN) {
+      return closestCorners({
+        ...args
+      })
+    }
+
+    // tim cac diem giao nhau, va cham vs con tro
+    const pointerIntersections = pointerWithin(args)
+    if (!pointerIntersections?.length) {
+      return
+    }
+
+    // tim cai overId dau tien trong dam intersection o tren
+    let overId = getFirstCollision(pointerIntersections, 'id')
+    if (overId) {
+      const checkColumn = orderedColumns.find(column => column._id === overId)
+      if (checkColumn) {
+        console.log('overId before 1:: ', overId)
+        overId = closestCorners({
+          ...args,
+          droppableContainers: args.droppableContainers
+            .filter(container => container.id !== overId && checkColumn?.cardOrderIds?.includes(container.id))
+        })[0]?.id
+        // console.log('overId after:: ', overId)
+      }
+
+      lastOverId.current = overId
+      return [{ id: overId }]
+    }
+
+    console.log('overId before 2:: ', overId)
+    return lastOverId.current ? [{ id: lastOverId }] : []
+  }, [activeDragItemType])
+
   return (
     <DndContext
       onDragStart={handleDragStart}
       onDragOver={handleDragOver}
       onDragEnd={handleDragEnd}
       sensors={sensors}
-      collisionDetection={closestCorners}
+      // collisionDetection={closestCorners}
+      collisionDetection={collisionDetectionStrategy}
     >
       <Box sx={{
         bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#34495e' : '#1976d2'),
