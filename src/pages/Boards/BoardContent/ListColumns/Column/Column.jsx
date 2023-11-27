@@ -14,7 +14,7 @@ import {
   ContentCut,
   ContentPaste,
   DeleteForever, DragHandle,
-  ExpandMore,
+  ExpandMore
 } from '@mui/icons-material'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'

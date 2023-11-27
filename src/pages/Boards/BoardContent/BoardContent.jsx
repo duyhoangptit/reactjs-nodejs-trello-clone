@@ -48,7 +48,7 @@ function BoardContent(props) {
   const sensors = useSensors(mouseSensor, touchSensor)
 
   const [orderedColumns, setOrderedColumns] = useState([])
-  const board = props.board
+  const board = props?.board
 
   // Cung mot thoi diem chi co card hoac column dk keo
   const [activeDragItemId, setActiveDragItemId] = useState([])
