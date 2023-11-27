@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Badge, Box, InputAdornment, TextField, Tooltip, Typography } from '@mui/material'
 import ModeSelect from '../ModeSelect/ModeSelect.jsx'
 import AppsIcon from '@mui/icons-material/Apps'
-import {ReactComponent as TrelloIcon} from '~/assets/trello.svg'
+import { ReactComponent as TrelloIcon } from '~/assets/trello.svg'
 import SvgIcon from '@mui/material/SvgIcon'
 import Workspaces from '~/components/AppBar/Menu/Workspaces.jsx'
 import Recent from '~/components/AppBar/Menu/Recent.jsx'
@@ -33,7 +33,7 @@ function AppBar() {
           <SvgIcon component={TrelloIcon}
                    inheritViewBox
                    fontSize={'small'}
-                   sx={{color: 'white'}}/>
+                   sx={{ color: 'white' }}/>
           <Typography variant="span" sx={{fontSize: '1.2rem', fontWeight: 'bold', color: 'white'}}>Trello</Typography>
         </Box>
 
@@ -66,29 +66,31 @@ function AppBar() {
                      value={searchValue}
                      onChange={(e) => setSearchValue(e.target.value)}
                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <Search sx={{color: 'white'}}/>
-                          </InputAdornment>
-                        ),
+                       startAdornment: (
+                         <InputAdornment position="start">
+                           <Search sx={{ color: 'white' }}/>
+                         </InputAdornment>
+                       ),
                        endAdornment: (
-                         <Close
-                           fontSize={'small'}
-                           sx={{color: searchValue ? 'white' : 'transparent', cursor: 'pointer'}}
-                           onClick={() => setSearchValue('')}
-                         />
+                         <InputAdornment position={'end'}>
+                           <Close
+                             fontSize={'small'}
+                             sx={{ color: searchValue ? 'white' : 'transparent', cursor: 'pointer' }}
+                             onClick={() => setSearchValue('')}
+                           />
+                         </InputAdornment>
                        )
                      }}
                      sx={{
                        minWidth: '120px',
                        maxWidth: '180px',
-                       '& label': {color: 'white'},
-                       '& input': {color: 'white'},
-                       '& label.Mui-focused': {color: 'white'},
+                       '& label': { color: 'white' },
+                       '& input': { color: 'white' },
+                       '& label.Mui-focused': { color: 'white' },
                        '& .MuiOutlinedInput-root': {
-                         '& fieldset': {borderColor: 'white'},
-                         '&:hover fieldset': {borderColor: 'white'},
-                         '&.Mui-focused fieldset': {borderColor: 'white'},
+                         '& fieldset': { borderColor: 'white' },
+                         '&:hover fieldset': { borderColor: 'white' },
+                         '&.Mui-focused fieldset': { borderColor: 'white' }
                        }
                      }}
           />

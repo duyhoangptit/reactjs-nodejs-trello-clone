@@ -10,14 +10,15 @@ function Board() {
   const [board, setBoard] = useState(null)
 
   useEffect(() => {
-    const boardId = '6562b0d1d66f1fe9f6e60e53'
-
-    fetchBoardDetailsAPI(boardId).then(board => {
-      console.log(board)
-      setBoard(board)
-    }).catch(err => {
-      console.log(err)
-    })
+    // const boardId = '6562b0d1d66f1fe9f6e60e53'
+    //
+    // fetchBoardDetailsAPI(boardId).then(board => {
+    //   console.log(board)
+    //   setBoard(board)
+    // }).catch(err => {
+    //   console.log(err)
+    // })
+    setBoard(mockData?.board)
   }, [])
 
   return (
