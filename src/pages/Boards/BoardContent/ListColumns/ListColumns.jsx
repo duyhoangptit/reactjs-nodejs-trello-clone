@@ -6,17 +6,25 @@ import Column from '~/pages/Boards/BoardContent/ListColumns/Column/Column.jsx'
 import Button from '@mui/material/Button'
 import { Close, NoteAdd, Search } from '@mui/icons-material'
 import { horizontalListSortingStrategy, SortableContext } from '@dnd-kit/sortable'
+import { toast } from 'react-toastify'
+import { createNewColumnAPI } from '~/apis/index.js'
 
 function ListColumns(props) {
   const [openNewColumnForm, setOpenNewColumnForm] = useState(false)
 
   const [inputTitleColumn, setInputTitleColumn] = useState('')
-  const addNewColumn = () => {
+
+  const addNewColumn = async() => {
     if (!inputTitleColumn) {
       // show error
+      toast.error('Please enter column title')
       return
     }
+
     // call api create column
+    await props.createNewColumn({
+      title: inputTitleColumn
+    })
 
     // clear value and close input form
     toggleOpenNewColumnForm()
@@ -45,7 +53,10 @@ function ListColumns(props) {
         overflowY: 'hidden',
         '&::-webkit-scrollbar-track': { m:2 }
       }}>
-        {columns?.map(column => (<Column column={column} key={column._id}/>))}
+        {columns?.map(column => (<Column column={column}
+                                         key={column._id}
+                                         createNewCard={props.createNewCard}
+        />))}
 
         {!openNewColumnForm ?
           <Box

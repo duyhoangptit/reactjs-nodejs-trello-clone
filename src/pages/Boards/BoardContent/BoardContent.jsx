@@ -270,9 +270,10 @@ function BoardContent(props) {
     const newColumnIndex = orderedColumns.findIndex(c => c._id === over.id)
     // update lai columnOrderIds
     const dndOrderColumns = arrayMove(orderedColumns, oldColumnIndex, newColumnIndex)
-    // const dndOrderColumnsIds = dndOrderColumns.map(c => c._id)
 
-    // TODO: save dndOrderColumnsIds into database
+    // save dndOrderColumnsIds into database
+    props.moveColumns(dndOrderColumns)
+
     // update dndOrderColumns state
     setOrderedColumns(dndOrderColumns)
   }
@@ -339,7 +340,10 @@ function BoardContent(props) {
         height: (theme) => theme.trello.boardContentHeight,
         p: '10px 0'
       }}>
-        <ListColumns columns={orderedColumns}/>
+        <ListColumns columns={orderedColumns}
+                     createNewColumn={props.createNewColumn}
+                     createNewCard={props.createNewCard}
+        />
         <DragOverlay dropAnimation={dropAnimation}>
           {!activeDragItemType && null}
           {(activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN) && <Column column={activeDragItemData}/> }

@@ -23,17 +23,25 @@ import ListCards from '~/pages/Boards/BoardContent/ListColumns/Column/ListCards/
 import { mapOrder } from '~/utils/data.util.js'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
+import { toast } from 'react-toastify'
 
 function Column(props) {
+  const column = props.column
+
   const [openNewCardForm, setOpenNewCardForm] = useState(false)
 
   const [inputTitleCard, setInputTitleCard] = useState('')
-  const addNewCard = () => {
+  const addNewCard = async () => {
     if (!inputTitleCard) {
+      toast.error('Please enter card title', { position: 'bottom-right' })
       // show error
       return
     }
     // call api create column
+    await props.createNewCard({
+      title: inputTitleCard,
+      columnId: column?._id
+    })
 
     // clear value and close input form
     toggleOpenNewCardForm()
@@ -52,8 +60,6 @@ function Column(props) {
   const handleClose = (event) => {
     setAnchorEl(null)
   }
-
-  const column = props.column
   const orderedCards = mapOrder(column?.cards, column?.cardOrderIds, '_id')
 
   const {
