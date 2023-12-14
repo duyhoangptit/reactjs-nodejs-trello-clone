@@ -20,7 +20,6 @@ import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import Button from '@mui/material/Button'
 import ListCards from '~/pages/Boards/BoardContent/ListColumns/Column/ListCards/ListCards.jsx'
-import { mapOrder } from '~/utils/data.util.js'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { toast } from 'react-toastify'
@@ -60,7 +59,7 @@ function Column(props) {
   const handleClose = (event) => {
     setAnchorEl(null)
   }
-  const orderedCards = mapOrder(column?.cards, column?.cardOrderIds, '_id')
+  const orderedCards = column?.cards
 
   const {
     attributes,

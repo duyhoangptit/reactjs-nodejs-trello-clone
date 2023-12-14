@@ -1,11 +1,18 @@
 import React, { useEffect, useState } from 'react'
-import { Container } from '@mui/material'
+import { Box, CircularProgress, Container, Typography } from '@mui/material'
 import AppBar from '~/components/AppBar/AppBar.jsx'
 import BoardBar from './BoardBar/BoardBar.jsx'
 import BoardContent from './BoardContent/BoardContent.jsx'
 import {mockData} from '~/apis/mock-data'
-import { createNewCardAPI, createNewColumnAPI, fetchBoardDetailsAPI, updateBoardDetailsAPI } from '~/apis/index.js'
+import {
+  createNewCardAPI,
+  createNewColumnAPI,
+  fetchBoardDetailsAPI, moveCardToDifferentColumnAPI,
+  updateBoardDetailsAPI,
+  updateColumnDetailsAPI
+} from '~/apis/index.js'
 import { toast } from 'react-toastify'
+import { mapOrder } from '~/utils/data.util.js'
 
 function Board() {
   const [board, setBoard] = useState(null)
@@ -15,6 +22,16 @@ function Board() {
 
     fetchBoardDetailsAPI(boardId).then(board => {
       console.log(board)
+      // mapping order columns and cards
+      board.columns = mapOrder(board.columns, board.columnOrderIds, '_id')
+      // mapping cards in column
+      board.columns.forEach(column => {
+        if (!column.cards) {
+          column.cards = []
+        }
+        column.cards = mapOrder(column.cards, column.cardOrderIds, '_id')
+      })
+
       setBoard(board)
     }).catch(err => {
       console.log(err)
@@ -73,6 +90,70 @@ function Board() {
     })
   }
 
+  const moveCardInTheSameColumn = (columnId, dndOrderCards, dndOrderedCardIds) => {
+    // update state board
+    const newBoard = { ...board }
+    const columnToUpdate = newBoard.columns.find(item => item._id === columnId)
+    if (!columnToUpdate.cards) {
+      columnToUpdate.cards = []
+    }
+
+    // update cards
+    columnToUpdate.cards = dndOrderCards
+    columnToUpdate.cardOrderIds = dndOrderedCardIds
+
+    // call api update column
+    updateColumnDetailsAPI(columnId, {
+      cardOrderIds: dndOrderedCardIds
+    }).then(() => {
+      setBoard(board)
+    }).catch(err => {
+      toast.error(err.message, { position: 'top-right' })
+    })
+  }
+
+  // Khi di chuyen sang column khac
+  // b1: update mang cardOrderIds của column ban dau chua no
+  // b2: update mang cardOrderIds cua column tiep theo
+  // b3: cap nhat lai columnId moi cua card da keo
+  const moveCardToDifferentColumn = (currentCardId, prevColumnId, nextColumnId, dndOrderedColumns) => {
+    const dndOrderColumnsIds = dndOrderedColumns.map(c => c._id)
+
+    // update state board
+    const newBoard = { ...board }
+    newBoard.columns = dndOrderedColumns
+    newBoard.columnOrderIds = dndOrderColumnsIds
+
+    // call api update
+    moveCardToDifferentColumnAPI({
+      currentCardId,
+      prevColumnId,
+      prevCardOrderIds: dndOrderedColumns.find(c => c._id === prevColumnId)?.cardOrderIds,
+      nextColumnId,
+      nextCardOrderIds: dndOrderedColumns.find(c => c._id === nextColumnId)?.cardOrderIds
+    }).then(() => {
+      setBoard(board)
+    }).catch(err => {
+      toast.error(err.message, { position: 'top-right' })
+    })
+  }
+
+  if (!board) {
+    return (
+      <Box sx={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 2,
+        width: '100vw',
+        height: '100vh'
+      }}>
+        <CircularProgress/>
+        <Typography>Loading board...</Typography>
+      </Box>
+    )
+  }
+
   return (
     <Container disableGutters
       maxWidth={false}
@@ -86,6 +167,8 @@ function Board() {
         createNewColumn={createNewColumn}
         createNewCard={createNewCard}
         moveColumns={moveColumns}
+        moveCardInTheSameColumn={moveCardInTheSameColumn}
+        moveCardToDifferentColumn={moveCardToDifferentColumn}
       />
     </Container>
   )

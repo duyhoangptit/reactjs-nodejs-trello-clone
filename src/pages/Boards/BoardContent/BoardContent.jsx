@@ -3,7 +3,6 @@ import {
   Box,
 } from '@mui/material'
 import ListColumns from '~/pages/Boards/BoardContent/ListColumns/ListColumns.jsx'
-import { mapOrder } from '~/utils/data.util.js'
 import {
   closestCorners,
   defaultDropAnimationSideEffects,
@@ -17,8 +16,7 @@ import {
 import { arrayMove } from '@dnd-kit/sortable'
 import Column from '~/pages/Boards/BoardContent/ListColumns/Column/Column.jsx'
 import TrelloCard from '~/pages/Boards/BoardContent/ListColumns/Column/ListCards/TrelloCard/TrelloCard.jsx'
-import {cloneDeep} from 'lodash'
-import column from '~/pages/Boards/BoardContent/ListColumns/Column/Column.jsx'
+import { cloneDeep } from 'lodash'
 
 const ACTIVE_DRAG_ITEM_TYPE = {
   COLUMN: 'ACTIVE_DRAG_ITEM_TYPE_COLUMN',
@@ -60,7 +58,7 @@ function BoardContent(props) {
   const [oldColumnWhenDraggingCard, setOldColumnWhenDraggingCard] = useState([])
 
   useEffect(() => {
-    setOrderedColumns(mapOrder(board?.columns, board?.columnOrderIds, '_id'))
+    setOrderedColumns(board?.columns)
     // Khi board co change thi useEffect se dk chay lai
   }, [board])
 
@@ -125,11 +123,11 @@ function BoardContent(props) {
     if (activeColumn._id === overColumn._id) return
 
     setOrderedColumns(prevColumns => {
-      return getOrderedColumnCalc(active, over, overColumn, activeColumn, prevColumns, overCardId, activeDraggingCardId, activeDraggingCardData)
+      return getOrderedColumnCalc(active, over, overColumn, activeColumn, prevColumns, overCardId, activeDraggingCardId, activeDraggingCardData, 'xxxx')
     })
   }
 
-  const getOrderedColumnCalc = (active, over, overColumn, activeColumn, prevColumns, overCardId, activeDraggingCardId, activeDraggingCardData) => {
+  const getOrderedColumnCalc = (active, over, overColumn, activeColumn, prevColumns, overCardId, activeDraggingCardId, activeDraggingCardData, triggerFrom) => {
     // tim vi tri index cua over card trong column target
     const overCardIndex = overColumn.cards.findIndex(card => card._id === overCardId)
 
@@ -177,6 +175,14 @@ function BoardContent(props) {
 
       // cap nhat lai mang cardOrderIds cua column moi
       nextOverColumn.cardOrderIds = nextOverColumn.cards.map(card => card._id)
+    }
+
+    if (triggerFrom === 'handlerDragEnd') {
+      //
+      props.moveCardToDifferentColumn(activeDraggingCardId,
+        oldColumnWhenDraggingCard._id,
+        nextOverColumn._id,
+        nextColumns)
     }
 
     return nextColumns
@@ -229,38 +235,44 @@ function BoardContent(props) {
     // trong scope handlerDragEnd nay vi sau khi di qua onDragOver toi day la state ard da bi cap nhat mot lan r
     if (oldColumnWhenDraggingCard._id !== overColumn._id) {
       console.log('keo tha khac column')
-      setOrderedColumns(prevColumns => {
-        return getOrderedColumnCalc(active, over, overColumn, activeColumn, prevColumns, overCardId, activeDraggingCardId, activeDraggingCardData)
-      })
+      moveCardBetweenDifferentColumn(active, over, overColumn, activeColumn, overCardId, activeDraggingCardId, activeDraggingCardData)
     } else {
       console.log('keo tha trong cung column')
-      const oldCards = oldColumnWhenDraggingCard.cards
-      // old index
-      const oldCardIndex = oldCards.findIndex(c => c._id === activeDraggingCardId)
-      // new index
-      const newCardIndex = overColumn.cards.findIndex(c => c._id === overCardId)
-      // dung arrayMoves order card
-      const dndOrderCards = arrayMove(oldCards, oldCardIndex, newCardIndex)
-      // update state cards oder id
-      setOrderedColumns(prevColumns => {
-        const nextColumns = cloneDeep(prevColumns)
-        // get column contain card in nextColumns
-        const targetColumn = nextColumns.find(c => c._id === overColumn._id)
-        console.log('targetColumn:: ', targetColumn)
-
-        // edit card in column on nextColumns -> update cardOrderIds
-        targetColumn.cards = dndOrderCards
-        targetColumn.cardOrderIds = dndOrderCards.map(card => card._id)
-
-        return nextColumns
-      })
+      moveCardInColumnNow(active, over, overColumn, activeColumn, overCardId, activeDraggingCardId)
     }
   }
 
-  const moveCardInColumnNow = () => {
+  const moveCardInColumnNow = (active, over, overColumn, activeColumn, overCardId, activeDraggingCardId) => {
+    const oldCards = oldColumnWhenDraggingCard.cards
+    // old index
+    const oldCardIndex = oldCards.findIndex(c => c._id === activeDraggingCardId)
+    // new index
+    const newCardIndex = overColumn.cards.findIndex(c => c._id === overCardId)
+    // dung arrayMoves order card
+    const dndOrderCards = arrayMove(oldCards, oldCardIndex, newCardIndex)
+    const dndOrderedCardIds = dndOrderCards.map(card => card._id)
+
+    // update state cards oder id
+    setOrderedColumns(prevColumns => {
+      const nextColumns = cloneDeep(prevColumns)
+      // get column contain card in nextColumns
+      const targetColumn = nextColumns.find(c => c._id === overColumn._id)
+      console.log('targetColumn:: ', targetColumn)
+
+      // edit card in column on nextColumns -> update cardOrderIds
+      targetColumn.cards = dndOrderCards
+      targetColumn.cardOrderIds = dndOrderedCardIds
+
+      return nextColumns
+    })
+
+    props.moveCardInTheSameColumn(overColumn._id, dndOrderCards, dndOrderedCardIds)
   }
 
-  const moveCardBetweenDifferentColumn = () => {
+  const moveCardBetweenDifferentColumn = (active, over, overColumn, activeColumn, overCardId, activeDraggingCardId, activeDraggingCardData) => {
+    setOrderedColumns(prevColumns => {
+      return getOrderedColumnCalc(active, over, overColumn, activeColumn, prevColumns, overCardId, activeDraggingCardId, activeDraggingCardData, 'handlerDragEnd')
+    })
   }
 
   const dragDropColumn = (active, over) => {
@@ -271,11 +283,11 @@ function BoardContent(props) {
     // update lai columnOrderIds
     const dndOrderColumns = arrayMove(orderedColumns, oldColumnIndex, newColumnIndex)
 
-    // save dndOrderColumnsIds into database
-    props.moveColumns(dndOrderColumns)
-
     // update dndOrderColumns state
     setOrderedColumns(dndOrderColumns)
+
+    // save dndOrderColumnsIds into database
+    props.moveColumns(dndOrderColumns)
   }
 
   const dropAnimation = {
@@ -341,8 +353,8 @@ function BoardContent(props) {
         p: '10px 0'
       }}>
         <ListColumns columns={orderedColumns}
-                     createNewColumn={props.createNewColumn}
-                     createNewCard={props.createNewCard}
+          createNewColumn={props.createNewColumn}
+          createNewCard={props.createNewCard}
         />
         <DragOverlay dropAnimation={dropAnimation}>
           {!activeDragItemType && null}
