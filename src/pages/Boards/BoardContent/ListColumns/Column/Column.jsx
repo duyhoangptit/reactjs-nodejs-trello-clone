@@ -133,13 +133,23 @@ function Column(props) {
               anchorEl={anchorEl}
               open={open}
               onClose={handleClose}
+              onClick={handleClose}
               MenuListProps={{
                 'aria-labelledby': 'basic-button-workspaces'
               }}
             >
-              <MenuItem onClick={handleClose}>
+              <MenuItem
+                sx={{
+                  '&:hover': {
+                    color: 'success.light',
+                    '& .add-card-icon': {
+                      color: 'success.light'
+                    }
+                  }
+                }}
+                onClick={toggleOpenNewCardForm}>
                 <ListItemIcon>
-                  <AddCard fontSize="small" />
+                  <AddCard fontSize="small" className={'add-card-icon'}/>
                 </ListItemIcon>
                 <ListItemText>Add new Card</ListItemText>
               </MenuItem>
@@ -162,11 +172,20 @@ function Column(props) {
                 <ListItemText>Paste</ListItemText>
               </MenuItem>
               <Divider />
-              <MenuItem onClick={handleClose}>
-                <ListItemIcon>
+              <MenuItem
+                sx={{
+                  '&:hover': {
+                    color: 'warning.dark',
+                    '& .delete-forever-icon': {
+                      color: 'warning.dark'
+                    }
+                  }
+                }}
+                onClick={handleClose}>
+                <ListItemIcon className={'delete-forever-icon'} >
                   <DeleteForever fontSize="small" />
                 </ListItemIcon>
-                <ListItemText>Remove this column</ListItemText>
+                <ListItemText>Delete this column</ListItemText>
               </MenuItem>
               <MenuItem onClick={handleClose}>
                 <ListItemIcon>

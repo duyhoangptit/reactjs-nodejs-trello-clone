@@ -10,6 +10,7 @@ import { GlobalStyles } from '@mui/material'
 import { ToastContainer } from 'react-toastify'
 // important import css
 import 'react-toastify/dist/ReactToastify.css'
+import { BrowserRouter as Router } from 'react-router-dom'
 
 const inputGlobalStyles =  <GlobalStyles styles={{}}/>
 
@@ -20,7 +21,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <CssBaseline/>
       {/*add style, custom style global*/}
       {inputGlobalStyles}
-      <App />
+      <Router>
+        <App />
+      </Router>,
       {/*toastify*/}
       <ToastContainer position={'bottom-left'} theme={'colored'}/>
     </CssVarsProvider>
